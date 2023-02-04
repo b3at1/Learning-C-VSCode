@@ -46,7 +46,7 @@ void initmap(void){ //creates a map with random prices
 char* prntMap(void){ //displays idx, name, and price
     int idx;
     for(idx = 0; idx < MAPSIZE; idx++){
-        printf("%d %-15s %dc\n", idx, storeFront[idx].key, storeFront[idx].value);
+        printf("%-5d %-15s %dc\n", idx, storeFront[idx].key, storeFront[idx].value);
     }
 }
 
@@ -71,7 +71,8 @@ int main(void){
 
 
     if(decide == 'y'){
-      prntMap();  
+        printf("ID:   Name: %16s\n", "Price:");
+        prntMap();  
     }
     else if(decide == 'n'){
         printf("bruh... you're making me cry :'(\n");
