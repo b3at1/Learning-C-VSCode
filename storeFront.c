@@ -15,6 +15,7 @@
 struct map{
     char* key;
     int value;
+    int quant;
 };
 
 struct map storeFront[MAPSIZE];
@@ -36,26 +37,34 @@ void initmap(void){ //creates a map with random prices
     for(i = 0; i < MAPSIZE; i++){
         int max_price = 5000;
         int min_price = 100;
+        int min_quant = 0;
+        int max_quant = 5;
         storeFront[i].value = rand() % (max_price - min_price) + min_price + 1; //set random ball price
+        storeFront[i].quant = rand() % (max_quant - min_quant) + min_quant + 1; //set random ball quant
         storeFront[i].key = balls[i];
     }
     
     
 }
 
-char* prntMap(void){ //displays idx, name, and price
+void prntMap(void){ //displays idx, name, and price
     int idx;
     for(idx = 0; idx < MAPSIZE; idx++){
-        printf("%-5d %-15s %dc\n", idx, storeFront[idx].key, storeFront[idx].value);
+        char *c = "c";
+        char quant[50] = "";
+        sprintf(quant, "%d", storeFront[idx].value);
+        strncat(quant, c, 49 - strlen(quant));       
+        printf("%-5d %-14s %-6s %3d\n", idx, storeFront[idx].key, quant, storeFront[idx].quant);
     }
 }
+
 
 int main(void){
     initmap();
     srand(time(0)); //seed random
     int wallet = rand() % (30000 - 1000) + 1000 + 1;
 
-    printf("Welcome to the Ball Store!\nWe sell balls. You should buy them <3\n");
+    printf("Welcome to the Ball Store!\nWe sell balls. You should buy them <3\n\n");
     printf("You have %dc in your wallet!\n", wallet);
 
     
@@ -71,7 +80,7 @@ int main(void){
 
 
     if(decide == 'y'){
-        printf("ID:   Name: %16s\n", "Price:");
+        printf("ID:   Name:%16s%13s\n", "Price:", "Quantity: ");
         prntMap();  
     }
     else if(decide == 'n'){
