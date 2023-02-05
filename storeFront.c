@@ -64,14 +64,41 @@ void prntMap(void){
 
 //attempts to purchase item ID in respective quant, returns 0 if failed to purchase
 int makePurchase(int *wallet, int id, int quant){
-    storeFront[id].quant -= quant;
-    *wallet -= (quant * storeFront[id].value);
+    int ret = 1;
+    int newQuant = storeFront[id].quant - quant;
+    int newBal = *wallet - (quant * storeFront[id].value);
+    int maxAfford = *wallet / storeFront[id].value;
+    printf("_______________________________________\n");
+
+    if(id < 0 || id > 9){
+        printf("That ID doesn't exist, silly!\n");
+        ret = 0;
+    }
+    else if(quant < 1){
+        printf("You can't buy that many, silly!\n");
+        ret = 0;
+    }
+    else if(newQuant < 0){
+        printf("We don't have that many in stock :c\n");
+        printf("There are currently %d of that item.\n", storeFront[id].quant);
+        ret = 0;
+    }
+    else if(newBal < 0){
+        printf("You can't afford that!\n");
+        printf("You can afford at most %d of that item.\n", maxAfford);
+        ret = 0;
+    }
+    else{
+        *wallet = newBal;
+        storeFront[id].quant = newQuant;
+    }
+    
     return 0;
 }
 
 void purchaseLogic(){
     srand(time(0)); //seed random
-    int wallet = rand() % (30000 - 1000) + 1000 + 1;
+    int wallet = rand() % (15000 - 1000) + 1000 + 1;
     int *wall = &wallet; //we need a pointer so it can be modified in methods
     char decide;
 
@@ -80,7 +107,7 @@ void purchaseLogic(){
     do{
         printf("Do you wanna buy balls? (y/n): ");
         scanf("%1c", &decide);
-        printf("\n"); //flush stdout
+        fflush(stdin); //flush stdin
         decide = tolower(decide);
 
     }
@@ -93,15 +120,19 @@ void purchaseLogic(){
             prntMap();
             printf("_______________________________________\n");
             printf("Type in the ID of an item to purchase: ");
-
             int item_id;
-            scanf("%1d", &item_id);
+            fflush(stdin); //flushes stdin
+            scanf("%d", &item_id);
+            printf("\n%d\n", item_id);
+            fflush(stdin); //flushes stdin
+
             printf("Type in the quantity to purchase: ");
-            int item_quant;
-            scanf("%1d", &item_quant);
+            int item_quant;            
+            scanf("%d", &item_quant);
             makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
             printf("You have %d left in your wallet.\n", wallet);
             fflush(stdin); //flushes stdin
+
             printf("Make another purchase? (y/n): ");
             scanf("%1c", &decide);
             printf("\n"); //flush stdout
@@ -110,7 +141,7 @@ void purchaseLogic(){
         }
 
     else if(decide == 'n'){
-        printf("bruh... you're making me cry :'(\n");
+        printf("\nbruh... you're making me cry :'(\n");
     }
     else
         printf("what did you do.... this shouldn't be reachable...\n");
