@@ -93,7 +93,7 @@ int makePurchase(int *wallet, int id, int quant){
         storeFront[id].quant = newQuant;
     }
     
-    return 0;
+    return ret;
 }
 
 void purchaseLogic(){
@@ -123,13 +123,15 @@ void purchaseLogic(){
             int item_id;
             fflush(stdin); //flushes stdin
             scanf("%d", &item_id);
-            printf("\n%d\n", item_id);
+            printf("\n%d\n", item_id); //DEBUG SHIZZZ, FIGURE THIS OUT
             fflush(stdin); //flushes stdin
 
             printf("Type in the quantity to purchase: ");
             int item_quant;            
             scanf("%d", &item_quant);
-            makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
+            int made = makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
+            if(made == 1)
+                printf("Thank you for your purchase <3\n", wallet);
             printf("You have %d left in your wallet.\n", wallet);
             fflush(stdin); //flushes stdin
 
