@@ -69,19 +69,14 @@ int makePurchase(int *wallet, int id, int quant){
     return 0;
 }
 
-void receipt();
-
-int main(void){
-    initmap();
+void purchaseLogic(){
     srand(time(0)); //seed random
     int wallet = rand() % (30000 - 1000) + 1000 + 1;
     int *wall = &wallet; //we need a pointer so it can be modified in methods
-
-    printf("Welcome to the Ball Store!\nWe sell balls. You should buy them <3\n\n");
-    printf("You have %dc in your wallet!\n", wallet);
-
-    
     char decide;
+
+    //first round of purchase
+    printf("You have %dc in your wallet!\n", wallet);
     do{
         printf("Do you wanna buy balls? (y/n): ");
         scanf("%1c", &decide);
@@ -91,7 +86,7 @@ int main(void){
     }
     while(decide != 'y' && decide != 'n');
 
-
+    //subsequent purchases
     if(decide == 'y'){
         while(decide == 'y'){
             printf("ID:   Name:%16s%13s\n", "Price:", "Quantity: ");
@@ -101,14 +96,12 @@ int main(void){
 
             int item_id;
             scanf("%1d", &item_id);
-
             printf("Type in the quantity to purchase: ");
             int item_quant;
             scanf("%1d", &item_quant);
-
             makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
             printf("You have %d left in your wallet.\n", wallet);
-
+            fflush(stdin); //flushes stdin
             printf("Make another purchase? (y/n): ");
             scanf("%1c", &decide);
             printf("\n"); //flush stdout
@@ -121,6 +114,17 @@ int main(void){
     }
     else
         printf("what did you do.... this shouldn't be reachable...\n");
+}
+
+void receipt();
+
+int main(void){
+    initmap();
+
+
+    printf("Welcome to the Ball Store!\nWe sell balls. You should buy them <3\n");
+    purchaseLogic();
+    
 
     
     return 0;
