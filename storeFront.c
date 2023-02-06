@@ -71,7 +71,7 @@ int makePurchase(int *wallet, int id, int quant){
     printf("_______________________________________\n");
 
     if(id < 0 || id > 9){
-        printf("That ID doesn't exist, silly!\n");
+        printf("ID not recognized, please try again!\n");
         ret = 0;
     }
     else if(quant < 1){
@@ -97,7 +97,7 @@ int makePurchase(int *wallet, int id, int quant){
 }
 
 void purchaseLogic(){
-    srand(time(0)); //seed random
+    srand(time(NULL) ^ getpid()); //seed random no idea what getpid() does but it seems to make the random better
     int wallet = rand() % (15000 - 1000) + 1000 + 1;
     int *wall = &wallet; //we need a pointer so it can be modified in methods
     char decide;
@@ -120,10 +120,12 @@ void purchaseLogic(){
             prntMap();
             printf("_______________________________________\n");
             printf("Type in the ID of an item to purchase: ");
-            int item_id;
+            int item_id = -1; //this way if input doesn't work out, will stay < 0
             fflush(stdin); //flushes stdin
-            scanf("%d", &item_id);
-            printf("\n%d\n", item_id); //DEBUG SHIZZZ, FIGURE THIS OUT
+            scanf("%1d", &item_id); //changed back to %1d to fix seg fault
+            //printf("\n%d\n", item_id); //DEBUG SHIZZZ, FIGURE THIS OUT
+            /* ok so the solution I have for now is just limiting to %1d, replace id with -1 on each new run*/
+
             fflush(stdin); //flushes stdin
 
             printf("Type in the quantity to purchase: ");
