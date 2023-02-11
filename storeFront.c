@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #include <ctype.h>
 #define MAPSIZE 10
 /*
@@ -101,13 +102,15 @@ void purchaseLogic(){
     int wallet = rand() % (15000 - 1000) + 1000 + 1;
     int *wall = &wallet; //we need a pointer so it can be modified in methods
     char decide;
-
+    int c;
     //first round of purchase
     printf("You have %dc in your wallet!\n", wallet);
     do{
+        fflush(stdin); 
         printf("Do you wanna buy balls? (y/n): ");
         scanf("%1c", &decide);
-        fflush(stdin); //flush stdin
+                while ((c = getchar()) != '\n' && c != EOF) {
+        }
         decide = tolower(decide);
 
     }
@@ -130,7 +133,7 @@ void purchaseLogic(){
 
             printf("Type in the quantity to purchase: ");
             int item_quant;            
-            scanf("%d", &item_quant);
+            scanf("%1d", &item_quant);
             int made = makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
             if(made == 1)
                 printf("Thank you for your purchase <3\n", wallet);
@@ -140,6 +143,7 @@ void purchaseLogic(){
             printf("Make another purchase? (y/n): ");
             scanf("%1c", &decide);
             printf("\n"); //flush stdout
+            fflush(stdin); 
             decide = tolower(decide);
             }
         }
