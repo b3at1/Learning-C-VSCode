@@ -7,7 +7,7 @@
 #include <ctype.h>
 #define MAPSIZE 10
 /*
-    The Ball Store is a store that sells balls
+    BallMart is a store that sells balls
     You can see what balls are in stock, 
     make purchases, 
     view your receipt
@@ -20,7 +20,7 @@ struct map{
     int quant;
 };
 struct map storeFront[MAPSIZE];
-
+struct map beginStore[MAPSIZE];
 //populates the storeFront with random prices and quantities
 void initmap(void){ 
     srand(time(0));
@@ -43,15 +43,16 @@ void initmap(void){
         int min_quant = 0;
         int max_quant = 5;
         storeFront[i].value = rand() % (max_price - min_price) + min_price + 1; //set random ball price
+        beginStore[i].value = rand() % (max_price - min_price) + min_price + 1; //set random ball price
         storeFront[i].quant = rand() % (max_quant - min_quant) + min_quant + 1; //set random ball quant
         storeFront[i].key = balls[i];
+        beginStore[i].key = balls[i];
     }
-    
     
 }
 
 //displays idx, name, and price
-void prntMap(void){ 
+void prntStore(){ 
     int idx;
     for(idx = 0; idx < MAPSIZE; idx++){
         //this seems like an awful way to concat stuff but I guess it works
@@ -60,6 +61,21 @@ void prntMap(void){
         sprintf(quant, "%d", storeFront[idx].value);
         strncat(quant, c, 49 - strlen(quant)); //we have 49-len(quant) space left because of \0
         printf("%-5d %-14s %-6s %3d\n", idx, storeFront[idx].key, quant, storeFront[idx].quant);
+    }
+}
+
+void prntReceipt(){ 
+    int idx;
+    for(idx = 0; idx < MAPSIZE; idx++){
+        //this seems like an awful way to concat stuff but I guess it works
+        if(beginStore[idx].quant != 0){ //only print stuff that got purchased
+            char *c = "c";
+            char quant[50] = "";
+            sprintf(quant, "%d", beginStore[idx].value);
+            strncat(quant, c, 49 - strlen(quant)); //we have 49-len(quant) space left because of \0
+            printf("%-5d %-14s %-6s %3d\n", idx, beginStore[idx].key, quant, beginStore[idx].quant);        
+        }
+
     }
 }
 
@@ -92,14 +108,27 @@ int makePurchase(int *wallet, int id, int quant){
     else{
         *wallet = newBal;
         storeFront[id].quant = newQuant;
+        beginStore[id].quant += quant;
     }
     
     return ret;
 }
 
+void receipt(int beginWallet, int wallet){
+        printf("_______________RECEIPT_________________\n");
+        printf("ID:   Name:%16s%13s\n", "Price:", "Quantity: ");
+        prntReceipt();
+        printf("_______________________________________\n");
+        printf("Your total is: %dc\n", beginWallet - wallet);
+        printf("Thank you for shopping at BallMart, please come again!\n");
+     //reuse map
+}
+
+//main purchase functionality
 void purchaseLogic(){
     srand(time(NULL) ^ getpid()); //seed random no idea what getpid() does but it seems to make the random better
     int wallet = rand() % (15000 - 1000) + 1000 + 1;
+    int beginWallet = wallet;
     int *wall = &wallet; //we need a pointer so it can be modified in methods
     char decide;
     int c;
@@ -120,12 +149,13 @@ void purchaseLogic(){
     if(decide == 'y'){
         while(decide == 'y'){
             printf("ID:   Name:%16s%13s\n", "Price:", "Quantity: ");
-            prntMap();
+            prntStore();
             printf("_______________________________________\n");
             printf("Type in the ID of an item to purchase: ");
             int item_id = -1; //this way if input doesn't work out, will stay < 0
             fflush(stdin); //flushes stdin
             scanf("%1d", &item_id); //changed back to %1d to fix seg fault
+
             //printf("\n%d\n", item_id); //DEBUG SHIZZZ, FIGURE THIS OUT
             /* ok so the solution I have for now is just limiting to %1d, replace id with -1 on each new run*/
 
@@ -145,6 +175,8 @@ void purchaseLogic(){
             printf("\n"); //flush stdout
             fflush(stdin); 
             decide = tolower(decide);
+            if(decide == 'n')
+                receipt(beginWallet, wallet);
             }
         }
 
@@ -155,16 +187,10 @@ void purchaseLogic(){
         printf("what did you do.... this shouldn't be reachable...\n");
 }
 
-void receipt();
 
 int main(void){
     initmap();
-
-
-    printf("Welcome to the Ball Store!\nWe sell balls. You should buy them <3\n");
+    printf("Welcome to BallMart!\nWe sell balls. You should buy them <3\n");
     purchaseLogic();
-    
-
-    
     return 0;
 }
