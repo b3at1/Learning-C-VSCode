@@ -166,7 +166,7 @@ void purchaseLogic(){
             scanf("%1d", &item_quant);
             int made = makePurchase(wall, item_id, item_quant); //make sure to pass in wall (the address), passing in wall* will derefence, meaning it passes in wallet
             if(made == 1)
-                printf("Thank you for your purchase <3\n", wallet);
+                printf("Thank you for your purchase <3\n");
             printf("You have %d left in your wallet.\n", wallet);
             fflush(stdin); //flushes stdin
 
