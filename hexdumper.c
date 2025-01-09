@@ -3,12 +3,12 @@
 int main(void){
   printf("Please input the file to dump [limit 50 characters]: ");
   FILE* fpHexD;
-  char sHexDName[50];
-  scanf("%s", &sHexDName);
+  char sHexDName[51];
+  scanf("%50s", &sHexDName);
   fpHexD = fopen(sHexDName, "rb");
   
   if(fpHexD == NULL){
-    perror("File couldn't be opened");
+    fprintf(stderr, "The File [%s] couldn't be opened", sHexDName);
     return 1;
   }
 
